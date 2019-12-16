@@ -1,21 +1,21 @@
 /**
  * game/main.js
- * 
+ *
  * What it Does:
  *   This file is the main game class
  *   Important parts are the load, create, and play functions
- *   
+ *
  *   Load: is where images, sounds, and fonts are loaded
- *   
+ *
  *   Create: is where game elements and characters are created
- *   
+ *
  *   Play: is where game characters are updated according to game play
  *   before drawing a new frame to the screen, and calling play again
  *   this creates an animation just like the pages of a flip book
- * 
+ *
  *   Other parts include boilerplate for requesting and canceling new frames
  *   handling input events, pausing, muting, etc.
- * 
+ *
  * What to Change:
  *   Most things to change will be in the play function
  */
@@ -62,8 +62,8 @@ class Game {
         unlockAudioContext(this.audioCtx);
         this.playlist = [];
 
-	// prevent parent wondow form scrolling
-	preventParent();
+        // prevent parent wondow form scrolling
+        preventParent();
 
         // frame count, rate, and time
         // this is just a place to keep track of frame rate (not set it)
@@ -159,11 +159,13 @@ class Game {
 
         // set overlay styles
         this.overlay.setStyles({...this.config.colors, ...this.config.settings});
-        
+
         // make a list of assets
         const gameAssets = [
             loadImage('backgroundImage', this.config.images.backgroundImage),
             loadImage('ballImage', this.config.images.ballImage),
+            loadImage('player1Image', this.config.images.player1Image),
+            loadImage('player2Image', this.config.images.player2Image),
             loadSound('bounceSound', this.config.sounds.bounceSound),
             loadSound('scoreSound', this.config.sounds.scoreSound),
             loadSound('backgroundMusic', this.config.sounds.backgroundMusic),
@@ -174,14 +176,14 @@ class Game {
         loadList(gameAssets, (progress) => {
             document.getElementById('loading-progress').textContent = `${progress.percent}%`;
         })
-        .then((assets) => {
+          .then((assets) => {
 
-            this.images = assets.image;
-            this.sounds = assets.sound;
+              this.images = assets.image;
+              this.sounds = assets.sound;
 
-        })
-        .then(() => this.create())
-        .catch(err => console.error(err));
+          })
+          .then(() => this.create())
+          .catch(err => console.error(err));
     }
 
     create() {
@@ -196,11 +198,12 @@ class Game {
         this.player1 = new Player({
             name: 'player1',
             ctx: this.ctx,
-            color: this.config.colors.rightPaddleColor,
-            x: right - pWidth,
+            image: this.images.player1Image,
+            // color: this.config.colors.rightPaddleColor,
+            x: right - pWidth*2,
             y: centerY - pHeight / 2,
-            width: pWidth,
-            height: pHeight,
+            width: pWidth*1.5,
+            height: pHeight*1.3,
             speed: 50,
             bounds: this.screen
         })
@@ -208,10 +211,11 @@ class Game {
         this.player2 = new Player({
             name: 'player2',
             ctx: this.ctx,
-            color: this.config.colors.leftPaddleColor,
+            image: this.images.player2Image,
+            // color: this.config.colors.leftPaddleColor,
             x: 0,
             y: centerY - pHeight / 2,
-            width: pWidth,
+            width: pWidth*5,
             height: pHeight,
             speed: 50,
             bounds: this.screen
@@ -331,7 +335,7 @@ class Game {
                 let diffY =  y - this.player1.y - this.player1.height / 2;
                 this.player1.move(0, diffY / 100, 1);
             }
-            
+
             if (this.input.current === 'touch') {
                 let y = this.input.touch.y - this.canvas.offsetTop;
                 let diffY =  y - this.player1.y - this.player1.height / 2;
@@ -342,11 +346,11 @@ class Game {
 
             // player 2: computer
             if (!this.input2.active && this.ball.launched && this.ball.dx < 0) {
-               
+
                 // move computer player toward the ball
                 // get diffY and calculate dy
                 let diffY = this.ball.y / 2 - this.player2.y;
-                let dy2 = diffY / (this.ball.x * 2); 
+                let dy2 = diffY / (this.ball.x * 2);
 
                 // apply a difficulty/speed limit
                 let difficulty = parseInt(this.config.settings);
@@ -372,9 +376,6 @@ class Game {
             // bounce ball off player1
             let collided = this.ball.collisionsWith([this.player1, this.player2]);
             if (collided && collided.name === 'player1') {
-                // play bounce sound
-                this.playback('bounceSound', this.sounds.bounceSound);
-
                 // add some velocity
                 // change ball direction
                 // add some speed
@@ -384,63 +385,22 @@ class Game {
 
             // bounce ball off player2
             if (collided && collided.name === 'player2') {
-                // play bounce sound
-                this.playback('bounceSound', this.sounds.bounceSound);
-
-                // change ball direction
-                // add some speed to ball
-                this.ball.dx = 1;
-                this.ball.speed += 10;
                 this.ball.stop();
-                setTimeout(() => {
-                   // this.ball.setY(-100);
-                   this.reset();
-                   /*this.playback('scoreSound', this.sounds.scoreSound);
-                   this.player1.score += 1;
-                   this.ball.speed = parseInt(this.config.settings.ballSpeed);
-                   */
-                }, 1000);
+                this.ball.setY(-100);
+                this.player2.score += 1;
+                this.ball.launched = false;
+                this.ball.x = this.canvas.width;
             }
 
             // if ball touches left side, player1 scores
             if (this.ball.launched && this.ball.x <= this.ball.bounds.left) {
-                // play score sound
-                this.playback('scoreSound', this.sounds.scoreSound);
-
                 // give player1 one point
-                this.player2.score += 1;
+                this.player1.score += 1;
 
                 // reset ball speed
                 this.ball.speed = parseInt(this.config.settings.ballSpeed);
-
-                if (this.input2.active) {
-                    // wait for player2 human to relaunch
-
-                    this.ball.stop();
-                } else {
-                    // player2 computer to relaunch after 3 seconds
-
-                    this.ball.setY(this.player2.y);
-                    this.ball.launch(3000, 1, this.player2.width);
-                }
-                setTimeout(() => {
-                   this.reset();
-                }, 1000);
-            }
-
-            // if ball touches right side, player2 scores
-            if (this.ball.launched && 
-                this.ball.x + this.ball.width >= this.ball.bounds.right) {
-                // play score sound
-                this.playback('scoreSound', this.sounds.scoreSound);
-
-                // give player2 one point
-                this.player2.score += 1;
-
-                // reset ball speed
-                this.ball.speed = parseInt(this.config.settings.ballSpeed);
-
-                this.ball.stop();
+                this.ball.launched = false;
+                this.ball.x = this.canvas.width;
             }
 
             this.ball.move(this.frame.scale);
@@ -469,7 +429,7 @@ class Game {
 
         // launch from right
         if (side === 'right') {
-            this.ball.setY(this.player1.y);
+            this.ball.setY(this.player1.y + this.player1.height/4);
             this.ball.launch(null, -1, this.player1.width);
         }
 
@@ -640,8 +600,8 @@ class Game {
     mute() {
         let key = this.prefix.concat('muted');
         localStorage.setItem(
-            key,
-            localStorage.getItem(key) === 'true' ? 'false' : 'true'
+          key,
+          localStorage.getItem(key) === 'true' ? 'false' : 'true'
         );
         this.state.muted = localStorage.getItem(key) === 'true';
 
@@ -674,20 +634,20 @@ class Game {
             }, () => {
                 // remove played sound from playlist
                 this.playlist = this.playlist
-                    .filter(s => s.id != id);
+                  .filter(s => s.id != id);
             })
         });
     }
 
     stopPlayback(key) {
         this.playlist = this.playlist
-        .filter(s => {
-            let targetBuffer = s.key === key;
-            if (targetBuffer) {
-                s.playback.pause();
-            }
-            return targetBuffer;
-        })
+          .filter(s => {
+              let targetBuffer = s.key === key;
+              if (targetBuffer) {
+                  s.playback.pause();
+              }
+              return targetBuffer;
+          })
     }
 
     // reset game

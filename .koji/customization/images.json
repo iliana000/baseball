@@ -1,7 +1,9 @@
 {
   "images": {
-    "backgroundImage": "https://avatars3.githubusercontent.com/u/31210154?s=400&v=4",
-    "ballImage": "https://i.imgur.com/sujKkKx.png"
+    "backgroundImage": "https://objects.koji-cdn.com/e46e3eb9-9d82-4ce4-92ca-1470ea5f937f/kyrbo-baseballfield.svg",
+    "ballImage": "https://images.koji-cdn.com/e46e3eb9-9d82-4ce4-92ca-1470ea5f937f/jzg3w-9f8911eedfc246a684f43eaae9bb25e2.png",
+    "player1Image": "https://objects.koji-cdn.com/e46e3eb9-9d82-4ce4-92ca-1470ea5f937f/0fsfy-baseballbeat.svg",
+    "player2Image": "https://images.koji-cdn.com/e46e3eb9-9d82-4ce4-92ca-1470ea5f937f/vafxb-baseballglove.png"
   },
   "@@editor": [
     {
@@ -20,6 +22,18 @@
           "key": "ballImage",
           "name": "Ball Image",
           "description": "Ball image",
+          "type": "image"
+        },
+        {
+          "key": "player1Image",
+          "name": "Player1 Image",
+          "description": "Player1 image",
+          "type": "image"
+        },
+        {
+          "key": "player2Image",
+          "name": "Player2 Image",
+          "description": "Player2 image",
           "type": "image"
         }
       ]

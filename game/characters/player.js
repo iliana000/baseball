@@ -1,19 +1,19 @@
 /**
  * game/character/player.js
- * 
+ *
  * What it Does:
  *   This file is a basic player character
  *   it extends the Sprite class and adds two collision detections methods
- * 
+ *
  * What to Change:
  *   Add any character specific methods
  *   eg. eat
- * 
+ *
  */
 
-import Sprite from '../objects/sprite.js';
+import ImageSprite from '../objects/imageSprite.js';
 
-class Player extends Sprite {
+class Player extends ImageSprite {
     constructor(options) {
         super(options);
 
@@ -24,8 +24,9 @@ class Player extends Sprite {
     }
 
     draw() {
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        // this.ctx.fillStyle = this.color;
+        // this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        this.ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 }
 

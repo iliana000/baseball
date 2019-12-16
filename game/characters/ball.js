@@ -1,14 +1,14 @@
 /**
  * game/character/ball.js
- * 
+ *
  * What it Does:
  *   This file is a basic ball character
  *   it extends the Sprite class and adds two collision detections methods
- * 
+ *
  * What to Change:
  *   Add any character specific methods
  *   eg. eat
- * 
+ *
  */
 
 import ImageSprite from '../objects/imageSprite.js';
@@ -53,7 +53,7 @@ class Ball extends ImageSprite {
 
     collisionsWith(entities) {
         let result = entities
-        .find((ent) => { return this.collidesWith(ent); });
+          .find((ent) => { return this.collidesWith(ent); });
 
         return result;
     };

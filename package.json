@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "koji-tools watch &",
     "start": "npm run dev",
-    "dev": "npx parcel index.html",
+    "dev": "set PORT=2345 && npx parcel index.html",
     "build": "npx parcel build index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
