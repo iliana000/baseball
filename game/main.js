@@ -349,7 +349,7 @@ class Game {
 
                 // move computer player toward the ball
                 // get diffY and calculate dy
-                let diffY = this.ball.y / 2 - this.player2.y;
+                let diffY = this.ball.y - this.player2.y;
                 let dy2 = diffY / (this.ball.x * 2);
 
                 // apply a difficulty/speed limit
