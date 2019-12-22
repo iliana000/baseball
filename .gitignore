@@ -5,7 +5,6 @@ node_modules
 #manifest.webmanifest
 
 # Parcel Builds
-dist
 .cache
 
 # tmp
